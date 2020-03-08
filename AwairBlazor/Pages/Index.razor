@@ -1,0 +1,24 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStore
+@page "/"
+
+<h1>Awair</h1>
+
+<p>Enter the bearer token from <a href="https://developer.getawair.com/console/access-token">https://developer.getawair.com/console/access-token</a></p>
+
+<input type="text" width="200" id="bearer" @bind="AwairBearerToken" />
+<br />
+<button @onclick="UpdateLocalStorage">Save</button>
+
+@code{
+    string AwairBearerToken;
+
+    public async void UpdateLocalStorage()
+    {
+        await localStore.SetItemAsync(AwairService.BearerStorageKey, AwairBearerToken);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AwairBearerToken = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
+    }
+}

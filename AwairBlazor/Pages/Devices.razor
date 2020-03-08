@@ -1,0 +1,43 @@
+﻿@page "/devices"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
+<h1>Awair Devices</h1>
+
+@if (devices == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Device Name</th>
+                <th>Device UUID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var device in devices.DevicesDevices)
+            {
+                <tr>
+                    <td>@device.Name</td>
+                    <td>@device.DeviceUuid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private QuickType.Devices devices;
+    private static AwairService api;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bearer = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
+        api = new AwairService(Http, bearer);
+        devices = await api.GetDevicesAsync();
+    }
+
+}
