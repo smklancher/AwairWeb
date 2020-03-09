@@ -1,6 +1,8 @@
 name: gh-pages
 
 on: [push]
+    branches:
+      - master
 
 jobs:
   build:
