@@ -18,7 +18,7 @@ jobs:
         dotnet-version: 3.1.100
     - name: Publish with dotnet
       run: dotnet publish --configuration Release --output build
-    - name: Deploy to Github Pages
+    - name: Deploy to Github Pages # Seems like this ignores the .nojekyll file in wwwroot, so it must be manually committed to the gh-pages branch
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
