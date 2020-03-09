@@ -1,5 +1,6 @@
-﻿@inject Blazored.LocalStorage.ILocalStorageService localStore
-@page "/"
+﻿@page "/"
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager navManager
 
 <h1>Awair</h1>
 
@@ -19,6 +20,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AwairBearerToken = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        // get and save token if coming from url parameter
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
+        {
+            AwairBearerToken = param.First();
+            await localStore.SetItemAsync(AwairService.BearerStorageKey, AwairBearerToken);
+        }
+        else
+        {
+            // otherwise try to get it from localstorage
+            AwairBearerToken = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
+        }
+
     }
 }
