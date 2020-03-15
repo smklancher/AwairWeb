@@ -15,10 +15,6 @@
 <h2>Time Line Chart</h2>
 <ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="300" />
 
-<div class="row">
-    <button class="btn btn-primary" @onclick="OnClick">Fill On/Off</button>
-</div>
-
 @code
 {
     [Parameter]
@@ -26,24 +22,7 @@
 
     LineConfig _lineConfig;
     ChartJsLineChart _lineChartJs;
-    const string DeCh = "de-ch";
     LineDataset<TimeTuple<double>> _tempDataSet;
-    private bool _localeChangeWasAttempted = false;
-
-    private async Task TryChangeLocale()
-    {
-        if (_localeChangeWasAttempted) return;
-        _localeChangeWasAttempted = true;
-
-        var locales = await JsRuntime.GetAvailableLocales();
-        bool localeChanged = false;
-        if (locales != null && locales.Contains(DeCh))
-        {
-            localeChanged = await JsRuntime.ChangeLocale(DeCh);
-        }
-
-        if (!localeChanged) Console.WriteLine($"Locale was not changed to {DeCh}. Either it already is {DeCh} or this locale doesn't exist.");
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,10 +106,10 @@
 
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await TryChangeLocale();
-    }
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await TryChangeLocale();
+    //}
 
     private async Task OnClick()
     {
