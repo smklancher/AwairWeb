@@ -20,14 +20,14 @@ jobs:
       run: dotnet publish --configuration Release --output build
     - name: List files
       run: ls -R
-      working-directory: ./build
+      working-directory: ./build/wwwroot
     - name: Deploy to Github Pages # Seems like this ignores the .nojekyll file in wwwroot, so it must be manually committed to the gh-pages branch
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BASE_BRANCH: master # The branch the action should deploy from.
         BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: build/AwairBlazor # The folder the action should deploy.
+        FOLDER: build/wwwroot # The folder the action should deploy.
         CLEAN: true
     - name: List files
       run: ls -R
