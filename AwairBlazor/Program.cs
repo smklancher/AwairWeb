@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Blazored.LocalStorage;
+using AwairBlazor.Services;
 
 namespace AwairBlazor
 {
@@ -16,7 +17,9 @@ namespace AwairBlazor
             builder.RootComponents.Add<App>("app");
             builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddAppData();
 
+            //builder.Services.AddSingleton<Services.AppData>();
             await builder.Build().RunAsync();
         }
     }

@@ -1,38 +1,27 @@
 ﻿@page "/"
-@inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager navManager
+@inject AwairBlazor.Services.AppData appData
 
 <h1>Awair</h1>
 
 <p>Enter the bearer token from <a href="https://developer.getawair.com/console/access-token">https://developer.getawair.com/console/access-token</a></p>
 
-<input type="text" width="200" id="bearer" @bind="AwairBearerToken" />
+<input type="text" width="200" id="bearer" @bind="appData.Bearer.Value" />
 <br />
-<button class="btn btn-primary" @onclick="UpdateLocalStorage">Save</button>
+<button class="btn btn-primary" @onclick="appData.Bearer.CommitValueAsync">Save</button>
 
 @code{
-    string AwairBearerToken;
-
-    public async void UpdateLocalStorage()
-    {
-        await localStore.SetItemAsync(AwairService.BearerStorageKey, AwairBearerToken);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var uri = navManager.ToAbsoluteUri(navManager.Uri);
 
-        // get and save token if coming from url parameter
+        // get values from localstorage
+        await appData.InitAsync();
+
+        // override token if coming from url parameter
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
         {
-            AwairBearerToken = param.First();
-            await localStore.SetItemAsync(AwairService.BearerStorageKey, AwairBearerToken);
+            await appData.Bearer.SetValueAsync(param.First());
         }
-        else
-        {
-            // otherwise try to get it from localstorage
-            AwairBearerToken = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
-        }
-
     }
 }

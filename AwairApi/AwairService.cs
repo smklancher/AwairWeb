@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Linq;
+using Common;
 
 namespace AwairApi
 {
@@ -102,6 +103,7 @@ namespace AwairApi
 
         public async Task<QuickType.Devices> GetDevicesAsync()
         {
+            using var x = new DisposableTrace("GetDevices");
             var content = await SendAsync("devices");
             return QuickType.Devices.FromJson(content);
         }

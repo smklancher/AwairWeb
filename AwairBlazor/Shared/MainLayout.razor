@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
+@inject AwairBlazor.Services.AppData appData
 
 <div class="sidebar">
     <NavMenu />
@@ -13,3 +15,18 @@
         @Body
     </div>
 </div>
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        // get values from localstorage
+        await appData.InitAsync();
+
+        // override token if coming from url parameter
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
+        {
+            await appData.Bearer.SetValueAsync(param.First());
+        }
+    }
+}

@@ -8,11 +8,13 @@
     <base href="/AwairWeb/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
 </head>
 
 <body>
     <app>Loading...</app>
-	
+
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
         // Single Page Apps for GitHub Pages
@@ -26,18 +28,18 @@
         // When the single page app is loaded further down in this file,
         // the correct url will be waiting in the browser's history for
         // the single page app to route accordingly.
-        (function(l) {
+        (function (l) {
             if (l.search) {
                 var q = {};
-                l.search.slice(1).split('&').forEach(function(v) {
+                l.search.slice(1).split('&').forEach(function (v) {
                     var a = v.split('=');
                     q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
                 });
                 if (q.p !== undefined) {
-					var x=l.pathname.slice(0, -1) + (q.p || '') +
+                    var x = l.pathname.slice(0, -1) + (q.p || '') +
                         (q.q ? ('?' + q.q) : '') +
                         l.hash;
-					console.log('index replaceState: ' + x);
+                    console.log('index replaceState: ' + x);
                     window.history.replaceState(null, null,
                         l.pathname.slice(0, -1) + (q.p || '') +
                         (q.q ? ('?' + q.q) : '') +
