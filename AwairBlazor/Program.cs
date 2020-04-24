@@ -22,6 +22,8 @@ namespace AwairBlazor
 
             //builder.Services.AddSingleton<Services.AppData>();
             await builder.Build().RunAsync();
+			
+			//test change
         }
     }
 }
