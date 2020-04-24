@@ -17,6 +17,7 @@
 
         // get values from localstorage
         await appData.InitAsync();
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
 
         // override token if coming from url parameter
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))

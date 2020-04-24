@@ -14,6 +14,8 @@ namespace AwairBlazor.Services
     {
         private readonly ILocalStorageService localStore;
 
+        private bool isInitialized = false;
+
         public AppData(ILocalStorageService localStorage)
         {
             this.localStore = localStorage;
@@ -27,9 +29,13 @@ namespace AwairBlazor.Services
 
         public async Task InitAsync()
         {
-            await PastHour.RefreshValueAsync();
-            await Bearer.RefreshValueAsync();
-            Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}");
+            if (!isInitialized)
+            {
+                await PastHour.Initialize();
+                await Bearer.Initialize();
+                Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}");
+                isInitialized = true;
+            }
         }
     }
 }

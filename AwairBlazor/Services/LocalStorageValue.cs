@@ -7,7 +7,7 @@ namespace AwairBlazor.Services
     {
         private readonly string key;
         private readonly ILocalStorageService localStore;
-        private bool hasValue = false;
+        private bool isInitialized = false;
 
         public LocalStorageValue(string keyname, ILocalStorageService localStorage)
         {
@@ -30,9 +30,18 @@ namespace AwairBlazor.Services
             return;
         }
 
+        public async Task Initialize()
+        {
+            if (!isInitialized)
+            {
+                await RefreshValueAsync();
+            }
+        }
+
         public async Task<T> RefreshValueAsync()
         {
             Value = await localStore.GetItemAsync<T>(key);
+            isInitialized = true;
             return Value;
         }
 
@@ -40,6 +49,7 @@ namespace AwairBlazor.Services
         {
             this.Value = value;
             await CommitValueAsync();
+            isInitialized = true;
             return;
         }
 

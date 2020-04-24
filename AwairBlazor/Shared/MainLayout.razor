@@ -3,7 +3,7 @@
 @inject AwairBlazor.Services.AppData appData
 
 <div class="sidebar">
-    <NavMenu />
+    <NavMenu/>
 </div>
 
 <div class="main">
@@ -16,12 +16,14 @@
     </div>
 </div>
 @code{
+
     protected override async Task OnInitializedAsync()
     {
         var uri = navManager.ToAbsoluteUri(navManager.Uri);
 
         // get values from localstorage
         await appData.InitAsync();
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
 
         // override token if coming from url parameter
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))

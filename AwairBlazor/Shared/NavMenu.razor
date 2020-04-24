@@ -1,4 +1,5 @@
-﻿@inject Services.AppData AppData
+﻿@inject Services.AppData appData
+@inject NavigationManager navManager
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">AwairBlazor</a>
@@ -45,7 +46,7 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <MatSlideToggle @bind-Value="@AppData.PastHour.Value" @bind-Value:event="onchange" @onclick="()=>AppData.PastHour.SetValueAsync(!AppData.PastHour.Value)"></MatSlideToggle><span class="nav-all">@(AppData.PastHour.Value ? "Detail (showing Hour)" : "Detail (showing Day)")</span>
+            <MatSlideToggle @bind-Value="@appData.PastHour.Value" @bind-Value:event="onchange" @onclick="()=>appData.PastHour.SetValueAsync(!appData.PastHour.Value)"></MatSlideToggle><span class="nav-all">@(appData.PastHour.Value ? "Detail (showing Hour)" : "Detail (showing Day)")</span>
         </li>
     </ul>
 </div>
@@ -63,8 +64,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
 
         // get values from localstorage
-        await AppData.InitAsync();
+        await appData.InitAsync();
+
+        // override token if coming from url parameter
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
+        {
+            await appData.Bearer.SetValueAsync(param.First());
+        }
     }
 }
