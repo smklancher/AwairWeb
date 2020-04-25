@@ -10,7 +10,7 @@
 @using ChartJs.Blazor.Util
 @inject IJSRuntime JsRuntime
 @inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject AwairBlazor.Services.AppData appData
 
 <h2>Time Line Chart</h2>
 <ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="300" />
@@ -26,6 +26,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
+
         _lineConfig = new LineConfig
         {
             Options = new LineOptions
@@ -82,8 +84,8 @@
             }
         };
 
-        var bearer = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
-        var api = new AwairService(Http, bearer);
+        await appData.InitAsync();
+        var api = new AwairService(Http, appData.Bearer.Value);
         var multiraw = await api.GetAllDevicePastHourRawData();
 
         foreach (var raw in multiraw.RawAirData)

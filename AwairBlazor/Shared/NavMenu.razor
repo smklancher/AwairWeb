@@ -64,16 +64,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = navManager.ToAbsoluteUri(navManager.Uri);
         System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
-
-        // get values from localstorage
         await appData.InitAsync();
+    }
 
-        // override token if coming from url parameter
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
-        {
-            await appData.Bearer.SetValueAsync(param.First());
-        }
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + $": AfterRender" + (firstRender ? " firstRender" : string.Empty));
+        return base.OnAfterRenderAsync(firstRender);
     }
 }

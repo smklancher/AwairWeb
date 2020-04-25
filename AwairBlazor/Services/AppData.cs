@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -13,14 +16,20 @@ namespace AwairBlazor.Services
     public partial class AppData
     {
         private readonly ILocalStorageService localStore;
+        private readonly NavigationManager navManager;
 
-        private bool isInitialized = false;
+        private DateTime constructTime;
+        private TaskCompletionSource<object> initializing = null;
+        private DateTime initTime;
+        private AsyncLocal<bool> localShouldInitialize = new AsyncLocal<bool>();
 
-        public AppData(ILocalStorageService localStorage)
+        public AppData(ILocalStorageService localStorage, NavigationManager navManager)
         {
             this.localStore = localStorage;
+            this.navManager = navManager;
             PastHour = new LocalStorageValue<bool>("PastHour", localStore);
             Bearer = new LocalStorageValue<string>("AwairBearerToken", localStore);
+            constructTime = DateTime.Now;
         }
 
         public LocalStorageValue<string> Bearer { get; }
@@ -29,12 +38,54 @@ namespace AwairBlazor.Services
 
         public async Task InitAsync()
         {
-            if (!isInitialized)
+            lock (localShouldInitialize)
             {
-                await PastHour.Initialize();
-                await Bearer.Initialize();
-                Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}");
-                isInitialized = true;
+                if (initializing == null)
+                {
+                    initializing = new TaskCompletionSource<object>();
+                    localShouldInitialize.Value = true;
+                    Trace.WriteLine($"{DateTime.Now.Ticks} I'll initalize.");
+                }
+                else
+                {
+                    Trace.WriteLine($"{DateTime.Now.Ticks} I'll wait for init.");
+                }
+            }
+
+            if (localShouldInitialize.Value)
+            {
+                try
+                {
+                    var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+                    // override token if coming from url parameter
+                    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
+                    {
+                        await Bearer.SetValueAsync(param.First());
+                    }
+
+                    await PastHour.Initialize();
+                    await Bearer.Initialize();
+                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}");
+
+                    initTime = DateTime.Now;
+                    Trace.WriteLine($"AppData constructTime={constructTime.Ticks}, initTime={initTime.Ticks}");
+
+                    Trace.WriteLine($"{DateTime.Now.Ticks} Finished init.");
+                    initializing.SetResult(null);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"{DateTime.Now.Ticks} Exception in init.");
+
+                    initializing.SetException(ex);
+                    throw;
+                }
+            }
+            else
+            {
+                await initializing.Task;
+                Trace.WriteLine($"{DateTime.Now.Ticks} Finished waiting for init.");
             }
         }
     }
