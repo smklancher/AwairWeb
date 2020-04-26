@@ -92,21 +92,25 @@
         var api = new AwairService(Http, appData.Bearer.Value);
         MultiDeviceRawData multiraw;
 
+        var devices = await api.GetDevicesAsync();
+        await appData.AssignDeviceColors(devices);
+
         if (appData.PastHour.Value)
         {
-            multiraw = await api.GetAllDevicePastHourRawData();
+            multiraw = await api.GetAllDevicePastHourRawData(devices);
         }
         else
         {
-            multiraw = await api.GetAllDevicePastDay5MinData();
+            multiraw = await api.GetAllDevicePastDay5MinData(devices);
         }
 
         foreach (var raw in multiraw.RawAirData)
         {
             _tempDataSet = new LineDataset<TimeTuple<double>>
             {
-                BackgroundColor = ColorUtil.RandomColorString(),
-                BorderColor = ColorUtil.RandomColorString(),
+                BackgroundColor = ColorUtil.FromDrawingColor(raw.Device.Color),
+                BorderColor = ColorUtil.FromDrawingColor(raw.Device.Color),
+                //BorderColor = ColorUtil.RandomColorString(),
                 Label = raw.Device.Name,
                 Fill = false,
                 BorderWidth = 2,
@@ -118,7 +122,6 @@
             _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), p.ValueBySensorType(Sensor))));
             _lineConfig.Data.Datasets.Add(_tempDataSet);
         }
-
 
         title = (appData.PastHour.Value ? "Past hour " : "Past day ") + Sensor.ToString() + " Chart";
 

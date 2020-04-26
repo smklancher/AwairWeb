@@ -67,9 +67,9 @@ namespace AwairApi
             return tasks;
         }
 
-        public async Task<MultiDeviceRawData> GetAllDevicePastDay5MinData()
+        public async Task<MultiDeviceRawData> GetAllDevicePastDay5MinData(QuickType.Devices devices)
         {
-            var devices = await GetDevicesAsync();
+            using var x = new DisposableTrace("GetPastDay");
             DateTime to = DateTime.UtcNow;
             var from = to.AddHours(-24.0);
 
@@ -80,9 +80,9 @@ namespace AwairApi
             return multidata;
         }
 
-        public async Task<MultiDeviceRawData> GetAllDevicePastHourRawData()
+        public async Task<MultiDeviceRawData> GetAllDevicePastHourRawData(QuickType.Devices devices)
         {
-            var devices = await GetDevicesAsync();
+            using var x = new DisposableTrace("GetPastHour");
             DateTime to = DateTime.UtcNow;
             var from = to.AddHours(-1.0);
 

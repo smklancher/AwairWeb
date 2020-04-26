@@ -7,6 +7,7 @@ using System.Text;
 using CsvHelper;
 using Newtonsoft.Json;
 using AwairApi;
+using System.Drawing;
 
 namespace QuickType
 {
@@ -16,26 +17,20 @@ namespace QuickType
         public DevicesDevice Device { get; set; }
     }
 
-    public partial class RawAirData
+    public partial class DevicesDevice
     {
         [JsonIgnore]
-        public DevicesDevice Device { get; set; }
+        public Color Color { get; set; }
 
-        [JsonIgnore]
-        public List<FlatData> FlatData => Data.Select(x => new FlatData(x)).ToList();
-
-        public void SetDevice(DevicesDevice device)
+        public Color RandomizeColor()
         {
-            Device = device;
-
-            foreach (var d in Data)
-            {
-                d.Device = Device;
-            }
+            Random random = new Random();
+            Color = Color.FromArgb((byte)random.Next(0, 255), (byte)random.Next(0, 255), (byte)random.Next(0, 255));
+            return Color;
         }
     }
 
-    public partial class The5MinAvgAirData
+    public partial class RawAirData
     {
         [JsonIgnore]
         public DevicesDevice Device { get; set; }

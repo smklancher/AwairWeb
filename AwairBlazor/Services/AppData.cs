@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,23 @@ namespace AwairBlazor.Services
         public LocalStorageValue<string> Bearer { get; }
 
         public LocalStorageValue<bool> PastHour { get; }
+
+        public async Task AssignDeviceColors(QuickType.Devices devices)
+        {
+            foreach (var d in devices.DevicesDevices)
+            {
+                var colorval = new LocalStorageValue<int>($"{d.DeviceUuid}_Color", localStore);
+                if (await colorval.Exists())
+                {
+                    d.Color = Color.FromArgb(await colorval.RefreshValueAsync());
+                }
+                else
+                {
+                    // save a new random color for this device
+                    await colorval.SetValueAsync(d.RandomizeColor().ToArgb());
+                }
+            }
+        }
 
         public async Task InitAsync()
         {

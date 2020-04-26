@@ -30,6 +30,11 @@ namespace AwairBlazor.Services
             return;
         }
 
+        public async Task<bool> Exists()
+        {
+            return await localStore.ContainKeyAsync(key);
+        }
+
         public async Task Initialize()
         {
             if (!isInitialized)
