@@ -12,7 +12,7 @@
 @inject HttpClient Http
 @inject AwairBlazor.Services.AppData appData
 
-<h2>Time Line Chart</h2>
+<h2>@title</h2>
 <ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="300" />
 
 @code
@@ -24,9 +24,12 @@
     ChartJsLineChart _lineChartJs;
     LineDataset<TimeTuple<double>> _tempDataSet;
 
+    private string title = "Time Line Chart";
+
     protected override async Task OnInitializedAsync()
     {
         System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
+        title = Sensor.ToString() + " Chart (loading...)";
 
         _lineConfig = new LineConfig
         {
@@ -85,8 +88,18 @@
         };
 
         await appData.InitAsync();
+        title = (appData.PastHour.Value ? "Past hour " : "Past day ") + Sensor.ToString() + " Chart (loading...)";
         var api = new AwairService(Http, appData.Bearer.Value);
-        var multiraw = await api.GetAllDevicePastHourRawData();
+        MultiDeviceRawData multiraw;
+
+        if (appData.PastHour.Value)
+        {
+            multiraw = await api.GetAllDevicePastHourRawData();
+        }
+        else
+        {
+            multiraw = await api.GetAllDevicePastDay5MinData();
+        }
 
         foreach (var raw in multiraw.RawAirData)
         {
@@ -105,6 +118,9 @@
             _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), p.ValueBySensorType(Sensor))));
             _lineConfig.Data.Datasets.Add(_tempDataSet);
         }
+
+
+        title = (appData.PastHour.Value ? "Past hour " : "Past day ") + Sensor.ToString() + " Chart";
 
     }
 

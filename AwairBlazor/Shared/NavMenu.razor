@@ -46,7 +46,7 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <MatSlideToggle @bind-Value="@appData.PastHour.Value" @bind-Value:event="onchange" @onclick="()=>appData.PastHour.SetValueAsync(!appData.PastHour.Value)"></MatSlideToggle><span class="nav-all">@(appData.PastHour.Value ? "Detail (showing Hour)" : "Detail (showing Day)")</span>
+            <MatSlideToggle @bind-Value="@appData.PastHour.Value" @bind-Value:event="onchange" @onclick="DetailClicked"></MatSlideToggle><span class="nav-all">@(appData.PastHour.Value ? "Detail (showing Hour)" : "Detail (showing Day)")</span>
         </li>
     </ul>
 </div>
@@ -60,6 +60,14 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task DetailClicked()
+    {
+        await appData.PastHour.SetValueAsync(!appData.PastHour.Value);
+
+        // force reloading the page is easy but inelegant... should be telling the chart that StateHasChanged()
+        navManager.NavigateTo(navManager.Uri, true);
     }
 
     protected override async Task OnInitializedAsync()

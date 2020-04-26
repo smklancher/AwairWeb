@@ -34,4 +34,23 @@ namespace QuickType
             }
         }
     }
+
+    public partial class The5MinAvgAirData
+    {
+        [JsonIgnore]
+        public DevicesDevice Device { get; set; }
+
+        [JsonIgnore]
+        public List<FlatData> FlatData => Data.Select(x => new FlatData(x)).ToList();
+
+        public void SetDevice(DevicesDevice device)
+        {
+            Device = device;
+
+            foreach (var d in Data)
+            {
+                d.Device = Device;
+            }
+        }
+    }
 }
