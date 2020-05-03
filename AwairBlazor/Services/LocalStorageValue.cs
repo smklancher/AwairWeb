@@ -60,6 +60,16 @@ namespace AwairBlazor.Services
 
         public override string ToString()
         {
+            if (!isInitialized)
+            {
+                return "[uninitialized]";
+            }
+
+            if (Value == null)
+            {
+                return "[null]";
+            }
+
             return Value.ToString();
         }
     }
