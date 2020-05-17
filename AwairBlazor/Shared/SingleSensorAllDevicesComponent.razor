@@ -13,6 +13,11 @@
 @inject AwairBlazor.Services.AppData appData
 
 <h2>@title</h2>
+
+<span>24 Hours</span>
+<MatSlideToggle @bind-Value="@appData.PastHour.Value" @bind-Value:event="onchange" @onclick="DetailClicked"></MatSlideToggle>
+<span>1 Hour</span>
+
 <ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="300" />
 
 @code
@@ -26,11 +31,8 @@
 
     private string title = "Time Line Chart";
 
-    protected override async Task OnInitializedAsync()
+    private void InitChart()
     {
-        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
-        title = Sensor.ToString() + " Chart (loading...)";
-
         _lineConfig = new LineConfig
         {
             Options = new LineOptions
@@ -86,9 +88,26 @@
                 }
             }
         };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
+        title = Sensor.ToString() + " Chart (loading...)";
+
+        InitChart();
 
         await appData.InitAsync();
-        title = (appData.PastHour.Value ? "Past hour " : "Past day ") + Sensor.ToString() + " Chart (loading...)";
+
+        await UpdateChart();
+    }
+
+    private async Task UpdateChart()
+    {
+        title = (appData.PastHour.Value ? "Past Hour " : "Past 24 Hour ") + Sensor.ToString() + " Chart (Loading...)";
+
+        StateHasChanged();
+
         var api = new AwairService(Http, appData.Bearer.Value);
         MultiDeviceRawData multiraw;
 
@@ -103,6 +122,8 @@
         {
             multiraw = await api.GetAllDevicePastDay5MinData(devices);
         }
+
+        _lineConfig.Data.Datasets.Clear();
 
         foreach (var raw in multiraw.RawAirData)
         {
@@ -123,8 +144,7 @@
             _lineConfig.Data.Datasets.Add(_tempDataSet);
         }
 
-        title = (appData.PastHour.Value ? "Past hour " : "Past day ") + Sensor.ToString() + " Chart";
-
+        title = (appData.PastHour.Value ? "Past Hour " : "Past 24 Hour ") + Sensor.ToString() + " Chart";
     }
 
     //protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -136,5 +156,21 @@
     {
         _tempDataSet.Fill = !_tempDataSet.Fill;
         await _lineChartJs.Update();
+    }
+
+    private async Task DetailClicked()
+    {
+        // set value without saving back to storage yet
+        appData.PastHour.Value = !appData.PastHour.Value;
+
+        StateHasChanged();
+
+        // force reloading the page is easy but inelegant... should be telling the chart that StateHasChanged()
+        //navManager.NavigateTo(navManager.Uri, true);
+        // await _lineChartJs.Update();
+        await UpdateChart();
+
+        // now commit to storage
+        await appData.PastHour.CommitValueAsync();
     }
 }
