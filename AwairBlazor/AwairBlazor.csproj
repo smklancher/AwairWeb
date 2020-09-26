@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -19,12 +19,14 @@
   </ItemGroup>
 
   <!-- Workaround for .NET 5 RC1 issue: https://github.com/dotnet/aspnetcore/issues/25887#issuecomment-693487470 -->
+  <!--
   <PropertyGroup>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>kill-port 9300</PreBuildEvent>
   </PropertyGroup>
+  -->
   <!-- Workaround for .NET 5 RC1 issue: https://github.com/dotnet/aspnetcore/issues/25887#issuecomment-693487470 -->
 
 </Project>
