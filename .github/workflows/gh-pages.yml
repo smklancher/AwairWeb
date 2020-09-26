@@ -1,6 +1,6 @@
 name: DeployToGitHubPages
 env:
-  PUBLISH_DIR: bin/Release/net5.0/publish/wwwroot
+  PUBLISH_DIR: AwairBlazor/bin/Release/net5.0/publish/wwwroot
   
 # Controls when the action will run
 on:
@@ -20,6 +20,9 @@ jobs:
 
     - name: Publish app
       run: dotnet publish -c Release
+      
+    - name: List files
+      run: ls -R
 
     - name: Rewrite base href
       uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
@@ -27,8 +30,6 @@ jobs:
         html_path: ${{ env.PUBLISH_DIR }}/index.html
         base_href: /AwairWeb/
 
-    - name: List files
-      run: ls -R
     - name: GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v1.5.1
