@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwairBlazor", "AwairBlazor\AwairBlazor.csproj", "{778694E8-7FAB-460C-BF2E-14A6C2212182}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1CA64EAE-E401-4B22-B17B-6BF6D3026814}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -12,7 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwairApi", "AwairApi\AwairApi.csproj", "{A489BC0F-64F3-4D6D-940C-0332F84BC2A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{F317526D-322E-4A74-BC23-944C9490024F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{F317526D-322E-4A74-BC23-944C9490024F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwairBlazorOld", "AwairBlazorOld\AwairBlazorOld.csproj", "{B64B33B5-C77F-4134-9BD0-4E092E7EC036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwairBlazor", "AwairBlazor\AwairBlazor.csproj", "{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +22,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{778694E8-7FAB-460C-BF2E-14A6C2212182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{778694E8-7FAB-460C-BF2E-14A6C2212182}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{778694E8-7FAB-460C-BF2E-14A6C2212182}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{778694E8-7FAB-460C-BF2E-14A6C2212182}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A489BC0F-64F3-4D6D-940C-0332F84BC2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A489BC0F-64F3-4D6D-940C-0332F84BC2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A489BC0F-64F3-4D6D-940C-0332F84BC2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -32,6 +30,14 @@ Global
 		{F317526D-322E-4A74-BC23-944C9490024F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F317526D-322E-4A74-BC23-944C9490024F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F317526D-322E-4A74-BC23-944C9490024F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

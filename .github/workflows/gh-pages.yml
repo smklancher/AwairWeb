@@ -1,33 +1,41 @@
-name: gh-pages
+name: DeployToGitHubPages
+env:
+  PUBLISH_DIR: bin/Release/netstandard2.1/publish/wwwroot
 
-on: 
+# Controls when the action will run
+on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.300
-    - name: Publish with dotnet
-      run: dotnet publish --configuration Release --output build
+        dotnet-version: 5.0.100-rc.1.20452.10
+
+    - name: Publish app
+      run: dotnet publish -c Release
+
+    - name: Rewrite base href
+      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+      with:
+        html_path: ${{ env.PUBLISH_DIR }}/index.html
+        base_href: /AwairWeb/
+
     - name: List files
       run: ls -R
-      working-directory: ./build/wwwroot
-    - name: Deploy to Github Pages # Seems like this ignores the .nojekyll file in wwwroot, so it must be manually committed to the gh-pages branch
-      uses: JamesIves/github-pages-deploy-action@releases/v3
+    - name: GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v1.5.1
       with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BASE_BRANCH: master # The branch the action should deploy from.
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: build/wwwroot # The folder the action should deploy.
-        CLEAN: true
+        target_branch: gh-pages
+        build_dir: ${{ env.PUBLISH_DIR }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: List files
       run: ls -R
