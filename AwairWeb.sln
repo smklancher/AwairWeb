@@ -12,8 +12,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwairApi", "AwairApi\AwairA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{F317526D-322E-4A74-BC23-944C9490024F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwairBlazorOld", "AwairBlazorOld\AwairBlazorOld.csproj", "{B64B33B5-C77F-4134-9BD0-4E092E7EC036}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwairBlazor", "AwairBlazor\AwairBlazor.csproj", "{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}"
 EndProject
 Global
@@ -30,10 +28,6 @@ Global
 		{F317526D-322E-4A74-BC23-944C9490024F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F317526D-322E-4A74-BC23-944C9490024F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F317526D-322E-4A74-BC23-944C9490024F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B64B33B5-C77F-4134-9BD0-4E092E7EC036}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEE1A4F7-1455-4ECB-B2A8-3EAB3B13E1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
