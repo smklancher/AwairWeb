@@ -8,6 +8,7 @@
 @using ChartJs.Blazor.ChartJS.Common.Time
 @using ChartJs.Blazor.ChartJS.LineChart
 @using ChartJs.Blazor.Util
+@using System.Diagnostics
 @inject IJSRuntime JsRuntime
 @inject HttpClient Http
 @inject AwairBlazor.Services.AppData appData
@@ -92,7 +93,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
+        Trace.WriteLine(this.GetType().ToString() + ": Init");
         title = Sensor.ToString() + " Chart (loading...)";
 
         InitChart();
@@ -127,12 +128,18 @@
 
         foreach (var raw in multiraw.RawAirData)
         {
+            var mostRecentValue = raw.FlatData.FirstOrDefault()?.ValueBySensorType(Sensor) ?? 0.0;
+
+            Trace.WriteLine($"Most recent value from {Sensor.ToString()}: {mostRecentValue}");
+
+            var label = raw.Device.Name + (mostRecentValue == 0.0 ? string.Empty : $" - {mostRecentValue:0.#}");
+
             _tempDataSet = new LineDataset<TimeTuple<double>>
             {
                 BackgroundColor = ColorUtil.FromDrawingColor(raw.Device.Color),
                 BorderColor = ColorUtil.FromDrawingColor(raw.Device.Color),
                 //BorderColor = ColorUtil.RandomColorString(),
-                Label = raw.Device.Name,
+                Label = label,
                 Fill = false,
                 BorderWidth = 2,
                 PointRadius = 3,
