@@ -110,6 +110,8 @@
         StateHasChanged();
 
         var api = new AwairService(Http, appData.Bearer.Value);
+        api.UseFahrenheit = appData.UseFahrenheit.Value;
+
         MultiDeviceRawData multiraw;
 
         var devices = await api.GetDevicesAsync();

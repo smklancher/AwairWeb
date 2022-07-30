@@ -14,6 +14,7 @@ namespace AwairApi
     public class AwairService
     {
         public const string BearerStorageKey = "AwairBearerToken";
+        public const string UseFahrenheitKey = "UseFahrenheit";
         private const string BaseUrl = "https://developer-apis.awair.is/v1/users/self/";
         private readonly string bearer;
         private readonly HttpClient client;

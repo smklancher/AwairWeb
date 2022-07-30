@@ -30,12 +30,14 @@ namespace AwairBlazor.Services
             this.navManager = navManager;
             PastHour = new LocalStorageValue<bool>("PastHour", localStore);
             Bearer = new LocalStorageValue<string>("AwairBearerToken", localStore);
+            UseFahrenheit = new LocalStorageValue<bool>("UseFahrenheit", localStore);
             constructTime = DateTime.Now;
         }
 
         public LocalStorageValue<string> Bearer { get; }
 
         public LocalStorageValue<bool> PastHour { get; }
+        public LocalStorageValue<bool> UseFahrenheit { get; }
 
         public async Task AssignDeviceColors(QuickType.Devices devices)
         {
@@ -82,9 +84,18 @@ namespace AwairBlazor.Services
                         await Bearer.SetValueAsync(param.First());
                     }
 
+                    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("UseFahrenheit", out var useF))
+                    {
+                        if(bool.TryParse(useF.FirstOrDefault(), out var value))
+                        {
+                            await UseFahrenheit.SetValueAsync(value);
+                        }
+                    }
+
                     await PastHour.Initialize();
                     await Bearer.Initialize();
-                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}");
+                    await UseFahrenheit.Initialize();
+                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}");
 
                     initTime = DateTime.Now;
                     Trace.WriteLine($"AppData constructTime={constructTime.Ticks}, initTime={initTime.Ticks}");
