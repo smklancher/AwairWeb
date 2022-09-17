@@ -5,11 +5,20 @@
 
 <p>Enter the bearer token from <a href="https://developer.getawair.com/console/access-token">https://developer.getawair.com/console/access-token</a></p>
 
-<input type="text" width="200" id="bearer" @bind="appData.Bearer.Value" />
+<p><input type="text" style="width: 100%;" id="bearer" @bind="appData.Bearer.Value" /></p>
+
+<p>CORS proxy for API calls (default: "@appData.DefaultProxy") <a href="https://github.com/smklancher/AwairWeb/issues/16">(more details)</a></p>
+<p><input type="text" style="width: 100%;" id="proxy" @bind="appData.Proxy.Value" /></p>
 <br />
-<button class="btn btn-primary" @onclick="appData.Bearer.CommitValueAsync">Save</button>
+<button class="btn btn-primary" @onclick="SaveSettings">Save</button>
 
 @code{
+    private async Task  SaveSettings()
+    {
+        await appData.Bearer.CommitValueAsync();
+        await appData.Proxy.CommitValueAsync();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");

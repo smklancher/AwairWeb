@@ -109,8 +109,15 @@
 
         StateHasChanged();
 
-        var api = new AwairService(Http, appData.Bearer.Value);
-        api.UseFahrenheit = appData.UseFahrenheit.Value;
+        var opts = new AwairServiceOptions()
+            {
+                Client=Http,
+                BearerToken=appData.Bearer.Value,
+                UseFahrenheit=appData.UseFahrenheit.Value,
+                Proxy=appData.Proxy.Value,
+            };
+
+        var api = new AwairService(opts);
 
         MultiDeviceRawData multiraw;
 

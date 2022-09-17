@@ -14,7 +14,6 @@ namespace AwairApi
     public class AwairService
     {
         public const string BearerStorageKey = "AwairBearerToken";
-        public const string UseFahrenheitKey = "UseFahrenheit";
         private const string BaseUrl = "https://developer-apis.awair.is/v1/users/self/";
         private readonly string bearer;
         private readonly HttpClient client;
@@ -25,7 +24,17 @@ namespace AwairApi
             bearer = bearerToken;
         }
 
+        public AwairService(AwairServiceOptions options)
+        {
+            client = options.Client;
+            bearer = options.BearerToken;
+            UseFahrenheit=options.UseFahrenheit;
+            Proxy = options.Proxy;
+        }
+
         public bool UseFahrenheit { get; set; } = true;
+
+        public string Proxy { get; set; } = string.Empty;
 
         public static string FormatIso8601(DateTime dt)
         {
@@ -139,9 +148,16 @@ namespace AwairApi
 
         public async Task<string> SendAsync(string urlPath)
         {
+            var path = BaseUrl + urlPath;
+
+            if (Proxy.Contains("?"))
+            {
+                path= Uri.EscapeDataString(BaseUrl + urlPath);
+            }
+
             var request = new HttpRequestMessage()
             {
-                RequestUri = new Uri(BaseUrl + urlPath),
+                RequestUri = new Uri(Proxy + path),
                 Method = HttpMethod.Get
             };
 

@@ -1,6 +1,7 @@
 ﻿@page "/devices"
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject AwairBlazor.Services.AppData appData
 
 <h1>Awair Devices</h1>
 
@@ -33,10 +34,20 @@ else
     private QuickType.Devices devices;
     private static AwairService api;
 
+
     protected override async Task OnInitializedAsync()
     {
-        var bearer = await localStore.GetItemAsync<string>(AwairService.BearerStorageKey);
-        api = new AwairService(Http, bearer);
+        await appData.InitAsync();
+
+        var opts = new AwairServiceOptions()
+            {
+                Client=Http,
+                BearerToken=appData.Bearer.Value,
+                UseFahrenheit=appData.UseFahrenheit.Value,
+                Proxy=appData.Proxy.Value,
+            };
+
+        api = new AwairService(opts);
         devices = await api.GetDevicesAsync();
     }
 

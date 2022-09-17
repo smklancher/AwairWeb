@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace AwairBlazor.Services
 {
@@ -24,6 +25,8 @@ namespace AwairBlazor.Services
         private DateTime initTime;
         private AsyncLocal<bool> localShouldInitialize = new AsyncLocal<bool>();
 
+        public string DefaultProxy { get; set; } = "https://cors-anywhere-production-201b.up.railway.app/";
+
         public AppData(ILocalStorageService localStorage, NavigationManager navManager)
         {
             this.localStore = localStorage;
@@ -31,10 +34,12 @@ namespace AwairBlazor.Services
             PastHour = new LocalStorageValue<bool>("PastHour", localStore);
             Bearer = new LocalStorageValue<string>("AwairBearerToken", localStore);
             UseFahrenheit = new LocalStorageValue<bool>("UseFahrenheit", localStore);
+            Proxy = new LocalStorageValue<string>("Proxy", localStore);
             constructTime = DateTime.Now;
         }
 
         public LocalStorageValue<string> Bearer { get; }
+        public LocalStorageValue<string> Proxy { get; }
 
         public LocalStorageValue<bool> PastHour { get; }
         public LocalStorageValue<bool> UseFahrenheit { get; }
@@ -95,7 +100,14 @@ namespace AwairBlazor.Services
                     await PastHour.Initialize();
                     await Bearer.Initialize();
                     await UseFahrenheit.Initialize();
-                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}");
+                    await Proxy.Initialize();
+
+                    if(string.IsNullOrEmpty(Proxy.Value))
+{
+                        await Proxy.SetValueAsync(DefaultProxy);
+                    }
+
+                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
 
                     initTime = DateTime.Now;
                     Trace.WriteLine($"AppData constructTime={constructTime.Ticks}, initTime={initTime.Ticks}");
