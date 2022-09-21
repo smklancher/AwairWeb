@@ -11,6 +11,9 @@ using System.Drawing;
 
 namespace QuickType
 {
+
+    public enum DeviceProperty { Co2, Humid, Lux, Pm25, SplA, Temp, Voc, Score };
+
     public partial class Datum
     {
         [JsonIgnore]

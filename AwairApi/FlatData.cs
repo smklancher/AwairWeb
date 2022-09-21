@@ -70,17 +70,18 @@ namespace AwairApi
 
         public double Voc { get; set; }
 
-        public double ValueBySensorType(QuickType.Comp sensorType)
+        public double ValueByDevicePropertyType(QuickType.DeviceProperty sensorType)
         {
             var value = sensorType switch
             {
-                QuickType.Comp.Co2 => Co2,
-                QuickType.Comp.Humid => Humid,
-                QuickType.Comp.Lux => Lux,
-                QuickType.Comp.Pm25 => Pm25,
-                QuickType.Comp.SplA => SplA,
-                QuickType.Comp.Temp => Temp,
-                QuickType.Comp.Voc => Voc,
+                QuickType.DeviceProperty.Co2 => Co2,
+                QuickType.DeviceProperty.Humid => Humid,
+                QuickType.DeviceProperty.Lux => Lux,
+                QuickType.DeviceProperty.Pm25 => Pm25,
+                QuickType.DeviceProperty.SplA => SplA,
+                QuickType.DeviceProperty.Temp => Temp,
+                QuickType.DeviceProperty.Voc => Voc,
+                QuickType.DeviceProperty.Score => Score,
                 _ => 0,
             };
 

@@ -62,20 +62,6 @@ namespace AwairApi
             return bearer;
         }
 
-        public async Task<QuickType.RawAirData> GetAllAsync()
-        {
-            var httpResponse = await client.GetAsync(BaseUrl + $"/devices/{{device_type}}/{{device_id}}/air-data/raw?from={{from}}&to={{to}}&limit={{limit}}&desc={{desc}}&fahrenheit={{fahrenheit}}");
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception($"Cannot retrieve result {httpResponse.StatusCode} - {httpResponse.ReasonPhrase}");
-            }
-
-            var content = await httpResponse.Content.ReadAsStringAsync();
-            var tasks = QuickType.RawAirData.FromJson(content);
-
-            return tasks;
-        }
 
         public async Task<MultiDeviceRawData> GetAllDevicePastDay5MinData(QuickType.Devices devices)
         {

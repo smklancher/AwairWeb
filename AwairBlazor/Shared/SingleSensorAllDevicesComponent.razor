@@ -24,7 +24,7 @@
 @code
 {
     [Parameter]
-    public QuickType.Comp Sensor { get; set; }
+    public QuickType.DeviceProperty Sensor { get; set; }
 
     LineConfig _lineConfig;
     ChartJsLineChart _lineChartJs;
@@ -137,7 +137,7 @@
 
         foreach (var raw in multiraw.RawAirData)
         {
-            var mostRecentValue = raw.FlatData.FirstOrDefault()?.ValueBySensorType(Sensor) ?? 0.0;
+            var mostRecentValue = raw.FlatData.FirstOrDefault()?.ValueByDevicePropertyType(Sensor) ?? 0.0;
 
             Trace.WriteLine($"Most recent value from {Sensor.ToString()}: {mostRecentValue}");
 
@@ -156,7 +156,7 @@
                 SteppedLine = SteppedLine.False
             };
 
-            _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), p.ValueBySensorType(Sensor))));
+            _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), p.ValueByDevicePropertyType(Sensor))));
             _lineConfig.Data.Datasets.Add(_tempDataSet);
         }
 
