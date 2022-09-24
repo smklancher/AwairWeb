@@ -1,48 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AwairApi;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Newtonsoft.Json.Linq;
 
 namespace AwairBlazor.Services
 {
     // https://wellsb.com/csharp/aspnet/blazor-singleton-pass-data-between-pages/
     public partial class AppData
     {
+        HttpClient Http => httpClientFactory.CreateClient("Awair");
+
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly ILocalStorageService localStore;
         private readonly NavigationManager navManager;
 
-        private DateTime constructTime;
-        private TaskCompletionSource<object> initializing = null;
-        private DateTime initTime;
+        private TaskCompletionSource<object>? initializing = null;
         private AsyncLocal<bool> localShouldInitialize = new AsyncLocal<bool>();
 
         public string DefaultProxy { get; set; } = "https://cors-anywhere-production-201b.up.railway.app/";
 
-        public AppData(ILocalStorageService localStorage, NavigationManager navManager)
+        public AppData(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage, NavigationManager navManager)
         {
+            this.httpClientFactory = httpClientFactory; //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-6.0#basic-usage
             this.localStore = localStorage;
-            this.navManager = navManager;
+            this.navManager = navManager; //https://www.mikesdotnetting.com/article/340/working-with-query-strings-in-blazor
             PastHour = new LocalStorageValue<bool>("PastHour", localStore);
             Bearer = new LocalStorageValue<string>("AwairBearerToken", localStore);
             UseFahrenheit = new LocalStorageValue<bool>("UseFahrenheit", localStore);
             Proxy = new LocalStorageValue<string>("Proxy", localStore);
-            constructTime = DateTime.Now;
         }
+
 
         public LocalStorageValue<string> Bearer { get; }
         public LocalStorageValue<string> Proxy { get; }
 
         public LocalStorageValue<bool> PastHour { get; }
         public LocalStorageValue<bool> UseFahrenheit { get; }
+
+        public string ShortTimeLabel { get; set; } = "Past Hour";
+        public string LongTimeLabel { get; set; } = "Past 24 Hour";
+
+        public string CurrentTimeToggleLabel=> PastHour.Value ? ShortTimeLabel : LongTimeLabel;
 
         public async Task AssignDeviceColors(QuickType.Devices devices)
         {
@@ -61,6 +66,39 @@ namespace AwairBlazor.Services
             }
         }
 
+        private async Task InitLogic()
+        {
+            var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+            // override token if coming from url parameter
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
+            {
+                await Bearer.SetValueAsync(param.First());
+            }
+
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("UseFahrenheit", out var useF))
+            {
+                if (bool.TryParse(useF.FirstOrDefault(), out var value))
+                {
+                    await UseFahrenheit.SetValueAsync(value);
+                }
+            }
+
+            await PastHour.Initialize();
+            await Bearer.Initialize();
+            await UseFahrenheit.Initialize();
+            await Proxy.Initialize();
+
+            if (string.IsNullOrEmpty(Proxy.Value))
+            {
+                await Proxy.SetValueAsync(DefaultProxy);
+            }
+
+            Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
+
+
+        }
+
         public async Task InitAsync()
         {
             lock (localShouldInitialize)
@@ -69,11 +107,11 @@ namespace AwairBlazor.Services
                 {
                     initializing = new TaskCompletionSource<object>();
                     localShouldInitialize.Value = true;
-                    Trace.WriteLine($"{DateTime.Now.Ticks} I'll initalize.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} I'll initalize.");
                 }
                 else
                 {
-                    Trace.WriteLine($"{DateTime.Now.Ticks} I'll wait for init.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} I'll wait for init.");
                 }
             }
 
@@ -81,43 +119,13 @@ namespace AwairBlazor.Services
             {
                 try
                 {
-                    var uri = navManager.ToAbsoluteUri(navManager.Uri);
-
-                    // override token if coming from url parameter
-                    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var param))
-                    {
-                        await Bearer.SetValueAsync(param.First());
-                    }
-
-                    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("UseFahrenheit", out var useF))
-                    {
-                        if(bool.TryParse(useF.FirstOrDefault(), out var value))
-                        {
-                            await UseFahrenheit.SetValueAsync(value);
-                        }
-                    }
-
-                    await PastHour.Initialize();
-                    await Bearer.Initialize();
-                    await UseFahrenheit.Initialize();
-                    await Proxy.Initialize();
-
-                    if(string.IsNullOrEmpty(Proxy.Value))
-{
-                        await Proxy.SetValueAsync(DefaultProxy);
-                    }
-
-                    Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
-
-                    initTime = DateTime.Now;
-                    Trace.WriteLine($"AppData constructTime={constructTime.Ticks}, initTime={initTime.Ticks}");
-
-                    Trace.WriteLine($"{DateTime.Now.Ticks} Finished init.");
-                    initializing.SetResult(null);
+                    await InitLogic();
+                    initializing.SetResult(new object());
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} Finished init.");
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"{DateTime.Now.Ticks} Exception in init.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} Exception in init.");
 
                     initializing.SetException(ex);
                     throw;
@@ -126,7 +134,7 @@ namespace AwairBlazor.Services
             else
             {
                 await initializing.Task;
-                Trace.WriteLine($"{DateTime.Now.Ticks} Finished waiting for init.");
+                //Trace.WriteLine($"{DateTime.Now.Ticks} Finished waiting for init.");
             }
         }
     }
