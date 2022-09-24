@@ -8,29 +8,42 @@ namespace AwairBlazor.Services
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly AppData appData;
-        private AwairService api;
+        private AwairService? _api;
         private QuickType.Devices? devices;
 
         public ApiService(IHttpClientFactory httpClientFactory, AppData appData)
         {
             this.httpClientFactory = httpClientFactory;
             this.appData = appData;
+            
+        }
 
-            var opts = new AwairServiceOptions()
+        private async Task<AwairService> InitAsync()
+        {
+            await appData.InitAsync();
+
+            if(_api == null)
             {
-                Client = httpClientFactory.CreateClient("Awair"),
-                BearerToken = appData.Bearer.Value,
-                UseFahrenheit = appData.UseFahrenheit.Value,
-                Proxy = appData.Proxy.Value,
-            };
+                var opts = new AwairServiceOptions()
+                {
+                    Client = httpClientFactory.CreateClient("Awair"),
+                    BearerToken = appData.Bearer.Value,
+                    UseFahrenheit = appData.UseFahrenheit.Value,
+                    Proxy = appData.Proxy.Value,
+                };
 
-            api = new AwairService(opts);
+                _api = new AwairService(opts);
+            }
+
+            return _api;
         }
 
 
         public async Task<QuickType.Devices> GetDevices()
         {
-            if(devices == null)
+            var api= await InitAsync();
+
+            if (devices == null)
             {
                 devices = await api.GetDevicesAsync();
                 await appData.AssignDeviceColors(devices);
@@ -41,6 +54,8 @@ namespace AwairBlazor.Services
 
         public async Task<MultiDeviceRawData> GetRawData()
         {
+            var api = await InitAsync();
+
             var devices = await GetDevices();
             if (appData.PastHour.Value)
             {
