@@ -10,6 +10,7 @@ using AwairApi;
 using ChartJs.Blazor.Util;
 using System.Diagnostics;
 using System.Linq;
+using System;
 
 namespace AwairBlazor.Shared
 {
@@ -25,7 +26,7 @@ namespace AwairBlazor.Shared
 
                 Trace.WriteLine($"Most recent value from {sensor}: {mostRecentValue}");
 
-                var label = raw.Device.Name + (mostRecentValue == 0.0 ? string.Empty : $" - {mostRecentValue:0.#}");
+                var label = raw.Device.Name + (mostRecentValue == 0.0 ? string.Empty : $" - {mostRecentValue:0.00}");
 
                 var _tempDataSet = new LineDataset<TimeTuple<double>>
                 {
@@ -39,7 +40,7 @@ namespace AwairBlazor.Shared
                     SteppedLine = SteppedLine.False
                 };
 
-                _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), p.ValueByDevicePropertyType(sensor))));
+                _tempDataSet.AddRange(raw.FlatData.Select(p => new TimeTuple<double>(new Moment(p.Timestamp), Math.Round(p.ValueByDevicePropertyType(sensor),2))));
                 lineConfig.Data.Datasets.Add(_tempDataSet);
             }
         }
@@ -58,7 +59,7 @@ namespace AwairBlazor.Shared
                     },
                     Legend = new Legend
                     {
-                        Position = Position.Right,
+                        Position = Position.Top,
                         Labels = new LegendLabelConfiguration
                         {
                             UsePointStyle = true
@@ -72,27 +73,27 @@ namespace AwairBlazor.Shared
                     Scales = new Scales
                     {
                         xAxes = new List<CartesianAxis>
-{
-                        new TimeAxis
                         {
-                            Distribution = TimeDistribution.Linear,
-                            Ticks = new TimeTicks
+                            new TimeAxis
                             {
-                                Source = TickSource.Data
-                            },
-                            Time = new TimeOptions
-                            {
-                                Unit = TimeMeasurement.Millisecond,
-                                Round = TimeMeasurement.Millisecond,
-                                TooltipFormat = "DD.MM.YYYY HH:mm:ss:SSS",
-                                DisplayFormats = TimeDisplayFormats.DE_CH
-                            },
-                            ScaleLabel = new ScaleLabel
-                            {
-                                LabelString = "Time"
+                                Distribution = TimeDistribution.Linear,
+                                Ticks = new TimeTicks
+                                {
+                                    Source = TickSource.Data
+                                },
+                                Time = new TimeOptions
+                                {
+                                    Unit = TimeMeasurement.Minute,
+                                    Round = TimeMeasurement.Second,
+                                    TooltipFormat = "YYYY-MM-DD HH:mm",
+                                    DisplayFormats = TimeDisplayFormats.DE_CH
+                                },
+                                ScaleLabel = new ScaleLabel
+                                {
+                                    LabelString = "Time"
+                                }
                             }
                         }
-                    }
                     },
                     Hover = new LineOptionsHover
                     {

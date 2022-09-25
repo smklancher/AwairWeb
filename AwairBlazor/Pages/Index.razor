@@ -10,6 +10,9 @@
 <p>CORS proxy for API calls (default: "@appData.DefaultProxy") <a href="https://github.com/smklancher/AwairWeb/issues/16">(more details)</a></p>
 <p><input type="text" style="width: 100%;" id="proxy" @bind="appData.Proxy.Value" /></p>
 <br />
+<DetailToggle></DetailToggle>
+<br />
+<br />
 <button class="btn btn-primary" @onclick="SaveSettings">Save</button>
 
 @code{

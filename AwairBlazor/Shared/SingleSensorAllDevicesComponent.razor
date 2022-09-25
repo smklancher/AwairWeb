@@ -16,9 +16,7 @@
 
 <h2>@title</h2>
 
-<span>24 Hours</span>
-<MatSlideToggle @bind-Value="@appData.PastHour.Value" @bind-Value:event="onchange" @onclick="DetailClicked"></MatSlideToggle>
-<span>1 Hour</span>
+<DetailToggle OnDetailClicked="UpdateChart"></DetailToggle>
 
 <ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="300" />
 
@@ -48,18 +46,5 @@
         ChartHelper.AddRawDataToChartData(Sensor, multiraw, _lineConfig);
         
         title = $"{appData.CurrentTimeToggleLabel} {Sensor} Chart";
-    }
-
-
-    private async Task DetailClicked()
-    {
-        // set value without saving back to storage yet
-        appData.PastHour.Value = !appData.PastHour.Value;
-
-        StateHasChanged();
-        await UpdateChart();
-
-        // now commit to storage
-        await appData.PastHour.CommitValueAsync();
     }
 }

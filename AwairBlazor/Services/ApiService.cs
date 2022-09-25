@@ -1,6 +1,8 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AwairApi;
+using Microsoft.AspNetCore.Components;
 
 namespace AwairBlazor.Services
 {
@@ -50,6 +52,26 @@ namespace AwairBlazor.Services
             }
 
             return devices;
+        }
+
+        public MarkupString GetDeviceColorDot(QuickType.DevicesDevice device)
+        {
+            static String HexConverter(System.Drawing.Color c)
+            {
+                return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+            }
+
+            return new MarkupString($@"<span style=""color: {HexConverter(device.Color)};"">⬤</span>");
+        }
+
+        public MarkupString GetDeviceColorDotWithName(QuickType.DevicesDevice device)
+        {
+            static String HexConverter(System.Drawing.Color c)
+            {
+                return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+            }
+
+            return new MarkupString($@"<span style=""color: {HexConverter(device.Color)};"">⬤</span>{device.Name}&nbsp;&nbsp;");
         }
 
         public async Task<MultiDeviceRawData> GetRawData()
