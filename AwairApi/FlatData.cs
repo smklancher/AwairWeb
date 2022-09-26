@@ -76,9 +76,7 @@ namespace AwairApi
             {
                 QuickType.DeviceProperty.Co2 => Co2,
                 QuickType.DeviceProperty.Humid => Humid,
-                QuickType.DeviceProperty.Lux => Lux,
                 QuickType.DeviceProperty.Pm25 => Pm25,
-                QuickType.DeviceProperty.SplA => SplA,
                 QuickType.DeviceProperty.Temp => Temp,
                 QuickType.DeviceProperty.Voc => Voc,
                 QuickType.DeviceProperty.Score => Score,

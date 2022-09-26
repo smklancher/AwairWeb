@@ -16,6 +16,11 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
+            <NavLink class="nav-link" href="overview">
+                <span class="oi oi-plus" aria-hidden="true"></span> Overview
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
             <NavLink class="nav-link" href="score">
                 <span class="oi oi-plus" aria-hidden="true"></span> Score
             </NavLink>
@@ -57,7 +62,7 @@
 
     private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {

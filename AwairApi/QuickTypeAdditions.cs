@@ -12,7 +12,7 @@ using System.Drawing;
 namespace QuickType
 {
 
-    public enum DeviceProperty { Co2, Humid, Lux, Pm25, SplA, Temp, Voc, Score };
+    public enum DeviceProperty { Co2, Humid, Pm25, Temp, Voc, Score };
 
     public partial class Datum
     {
