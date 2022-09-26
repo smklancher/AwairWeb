@@ -1,0 +1,35 @@
+﻿
+@inject AwairBlazor.Services.AppData appData
+
+<span>Celsius</span>
+<MatSlideToggle @bind-Value="@appData.UseFahrenheit.Value" @bind-Value:event="onchange" @onclick="DetailClicked"></MatSlideToggle>
+<span>Fahrenheit</span>
+
+@code {
+
+    // Callback to update parent component
+    [Parameter] public EventCallback<string> OnDetailClicked { get; set; }
+
+    private async Task DetailClicked()
+    {
+        // set value without saving back to storage yet
+        appData.UseFahrenheit.Value = !appData.UseFahrenheit.Value;
+
+        StateHasChanged();
+
+        if (OnDetailClicked.HasDelegate)
+        {
+            // call update to parent component
+            await OnDetailClicked.InvokeAsync();
+        }
+
+        // now commit to storage
+        await appData.UseFahrenheit.CommitValueAsync();
+    }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await appData.InitAsync();
+    }
+}

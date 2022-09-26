@@ -65,12 +65,7 @@ namespace AwairBlazor.Services
                 return "[uninitialized]";
             }
 
-            if (Value == null)
-            {
-                return "[null]";
-            }
-
-            return Value.ToString();
+            return Value?.ToString() ?? "[null]";
         }
     }
 }

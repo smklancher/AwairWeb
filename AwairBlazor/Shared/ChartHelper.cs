@@ -11,6 +11,7 @@ using ChartJs.Blazor.Util;
 using System.Diagnostics;
 using System.Linq;
 using System;
+using ChartJs.Blazor.Charts;
 
 namespace AwairBlazor.Shared
 {
@@ -45,7 +46,29 @@ namespace AwairBlazor.Shared
             }
         }
 
-        public static LineConfig LineChartConfig()
+        public static QuickType.DeviceProperty[] DevicePropertyEnums()
+        {
+            //return (QuickType.DeviceProperty[])Enum.GetValues(typeof(QuickType.DeviceProperty));
+            return new QuickType.DeviceProperty[] {
+                QuickType.DeviceProperty.Score, 
+                QuickType.DeviceProperty.Temp,
+                QuickType.DeviceProperty.Humid,
+                QuickType.DeviceProperty.Co2,
+                QuickType.DeviceProperty.Voc,
+                QuickType.DeviceProperty.Pm25
+            };
+        }
+
+        public static Dictionary<QuickType.DeviceProperty, ChartJsLineChart> InitChartsByProperty()
+        {
+            return DevicePropertyEnums().ToDictionary(x => x, x => new ChartJsLineChart());
+        }
+        public static Dictionary<QuickType.DeviceProperty, LineConfig> InitConfigsByProperty(bool small=false)
+        {
+            return DevicePropertyEnums().ToDictionary(x => x, x => LineChartConfig(small,x.ToString()));
+        }
+
+        public static LineConfig LineChartConfig(bool small=false, string title="")
         {
             var lineConfig = new LineConfig
             {
@@ -54,8 +77,8 @@ namespace AwairBlazor.Shared
                     Responsive = true,
                     Title = new OptionsTitle
                     {
-                        Display = true,
-                        Text = "Line Chart"
+                        Display = !string.IsNullOrWhiteSpace(title),
+                        Text = title
                     },
                     Legend = new Legend
                     {
@@ -63,12 +86,13 @@ namespace AwairBlazor.Shared
                         Labels = new LegendLabelConfiguration
                         {
                             UsePointStyle = true
-                        }
+                        },
+                        Display=!small,
                     },
                     Tooltips = new Tooltips
                     {
                         Mode = InteractionMode.Nearest,
-                        Intersect = false
+                        Intersect = false,
                     },
                     Scales = new Scales
                     {
@@ -79,7 +103,7 @@ namespace AwairBlazor.Shared
                                 Distribution = TimeDistribution.Linear,
                                 Ticks = new TimeTicks
                                 {
-                                    Source = TickSource.Data
+                                    Source = TickSource.Auto
                                 },
                                 Time = new TimeOptions
                                 {
@@ -90,7 +114,8 @@ namespace AwairBlazor.Shared
                                 },
                                 ScaleLabel = new ScaleLabel
                                 {
-                                    LabelString = "Time"
+                                    LabelString = "Time",
+                                    Display = !small,
                                 }
                             }
                         }

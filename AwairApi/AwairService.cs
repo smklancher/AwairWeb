@@ -15,8 +15,8 @@ namespace AwairApi
     {
         public const string BearerStorageKey = "AwairBearerToken";
         private const string BaseUrl = "https://developer-apis.awair.is/v1/users/self/";
-        private readonly string bearer;
-        private readonly HttpClient client;
+        private string? bearer;
+        private HttpClient? client;
 
         public AwairService(HttpClient client, string bearerToken)
         {
@@ -26,9 +26,14 @@ namespace AwairApi
 
         public AwairService(AwairServiceOptions options)
         {
+            UpdateOptions(options);
+        }
+
+        public void UpdateOptions(AwairServiceOptions options)
+        {
             client = options.Client;
             bearer = options.BearerToken;
-            UseFahrenheit=options.UseFahrenheit;
+            UseFahrenheit = options.UseFahrenheit;
             Proxy = options.Proxy;
         }
 
@@ -149,7 +154,7 @@ namespace AwairApi
 
             request.Headers.Add("Authorization", $"Bearer {bearer}");
 
-            var httpResponse = await client.SendAsync(request);
+            var httpResponse = await client!.SendAsync(request);
 
             if (!httpResponse.IsSuccessStatusCode)
             {

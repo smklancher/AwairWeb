@@ -1,0 +1,62 @@
+﻿@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.ChartJS.Common.Enums
+@using ChartJs.Blazor.ChartJS.Common.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
+@using ChartJs.Blazor.ChartJS.Common.Handlers
+@using ChartJs.Blazor.ChartJS.Common.Time
+@using ChartJs.Blazor.ChartJS.LineChart
+@using ChartJs.Blazor.Util
+@using System.Diagnostics
+@inject IJSRuntime JsRuntime
+@inject HttpClient Http
+@inject AwairBlazor.Services.AppData appData
+@inject AwairBlazor.Services.ApiService api
+
+<h2>@title</h2>
+
+<DetailToggle OnDetailClicked="UpdateChart"></DetailToggle>
+<br />
+<DeviceList Full=false></DeviceList>
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        @foreach (var prop in ChartHelper.DevicePropertyEnums())
+        {
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4"><ChartJsLineChart @ref="Charts[prop]" Config="@Configs[prop]" Width="600" Height="300" /></div>
+        }
+
+    </div>
+</div>
+
+
+@code
+{
+    Dictionary<QuickType.DeviceProperty, ChartJsLineChart> Charts = ChartHelper.InitChartsByProperty();
+    Dictionary<QuickType.DeviceProperty, LineConfig> Configs = ChartHelper.InitConfigsByProperty(true);
+
+    private string title = "(loading...)";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await appData.InitAsync();
+        await UpdateChart();
+    }
+
+    private async Task UpdateChart()
+    {
+        title = $"Overview (Loading...)";
+
+        StateHasChanged();
+
+        var multiraw = await api.GetRawData();
+
+        foreach (var prop in ChartHelper.DevicePropertyEnums())
+        {
+            ChartHelper.AddRawDataToChartData(prop, multiraw, Configs[prop]);
+        }
+        
+        title = $"Overview";
+    }
+}

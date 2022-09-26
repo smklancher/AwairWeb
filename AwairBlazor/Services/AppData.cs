@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using AwairApi;
@@ -36,6 +38,8 @@ namespace AwairBlazor.Services
             UseFahrenheit = new LocalStorageValue<bool>("UseFahrenheit", localStore);
             Proxy = new LocalStorageValue<string>("Proxy", localStore);
         }
+
+        public Guid ServiceId { get; set; }= Guid.NewGuid();
 
 
         public LocalStorageValue<string> Bearer { get; }
@@ -94,24 +98,27 @@ namespace AwairBlazor.Services
                 await Proxy.SetValueAsync(DefaultProxy);
             }
 
-            Trace.WriteLine($"Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
+            Trace.WriteLine($"{DateTime.Now.Ticks} {ServiceId} Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
 
 
         }
 
-        public async Task InitAsync()
+        public async Task InitAsync([CallerMemberName] string methodName = "", [CallerFilePath] string callerFilePath = "")
         {
+            var id = $"{ServiceId} {Path.GetFileNameWithoutExtension(callerFilePath)}.{methodName}";
+            Trace.WriteLine($"{DateTime.Now.Ticks} {id} Entered Init (before lock).");
+
             lock (localShouldInitialize)
             {
                 if (initializing == null)
                 {
                     initializing = new TaskCompletionSource<object>();
                     localShouldInitialize.Value = true;
-                    //Trace.WriteLine($"{DateTime.Now.Ticks} I'll initalize.");
+                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll initalize.");
                 }
                 else
                 {
-                    //Trace.WriteLine($"{DateTime.Now.Ticks} I'll wait for init.");
+                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll won't try to init.");
                 }
             }
 
@@ -120,13 +127,12 @@ namespace AwairBlazor.Services
                 try
                 {
                     await InitLogic();
+                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished init.");
                     initializing.SetResult(new object());
-                    //Trace.WriteLine($"{DateTime.Now.Ticks} Finished init.");
                 }
                 catch (Exception ex)
                 {
-                    //Trace.WriteLine($"{DateTime.Now.Ticks} Exception in init.");
-
+                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} Exception in init.");
                     initializing.SetException(ex);
                     throw;
                 }
@@ -134,7 +140,7 @@ namespace AwairBlazor.Services
             else
             {
                 await initializing.Task;
-                //Trace.WriteLine($"{DateTime.Now.Ticks} Finished waiting for init.");
+                Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished waiting for init.");
             }
         }
     }

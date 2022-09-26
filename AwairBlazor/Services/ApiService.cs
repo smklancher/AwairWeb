@@ -24,17 +24,21 @@ namespace AwairBlazor.Services
         {
             await appData.InitAsync();
 
-            if(_api == null)
+            var opts = new AwairServiceOptions()
             {
-                var opts = new AwairServiceOptions()
-                {
-                    Client = httpClientFactory.CreateClient("Awair"),
-                    BearerToken = appData.Bearer.Value,
-                    UseFahrenheit = appData.UseFahrenheit.Value,
-                    Proxy = appData.Proxy.Value,
-                };
+                Client = httpClientFactory.CreateClient("Awair"),
+                BearerToken = appData.Bearer.Value,
+                UseFahrenheit = appData.UseFahrenheit.Value,
+                Proxy = appData.Proxy.Value,
+            };
 
+            if (_api == null)
+            {
                 _api = new AwairService(opts);
+            }
+            else
+            {
+                _api.UpdateOptions(opts);
             }
 
             return _api;
