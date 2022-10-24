@@ -1,0 +1,29 @@
+﻿
+@inject AwairBlazor.Services.AppData appData
+
+<span>Live</span>
+<MatSlideToggle @bind-Value="@appData.DemoMode.Value" @bind-Value:event="onchange" @onclick="DetailClicked"></MatSlideToggle>
+<span>Demo</span>
+
+@code {
+
+    // Callback to update parent component
+    [Parameter] public EventCallback<string> OnDetailClicked { get; set; }
+
+    private async Task DetailClicked()
+    {
+        // set value without saving back to storage yet
+        appData.DemoMode.Value = !appData.DemoMode.Value;
+
+        StateHasChanged();
+
+        if (OnDetailClicked.HasDelegate)
+        {
+            // call update to parent component
+            await OnDetailClicked.InvokeAsync();
+        }
+
+        // now commit to storage
+        await appData.DemoMode.CommitValueAsync();
+    }
+}

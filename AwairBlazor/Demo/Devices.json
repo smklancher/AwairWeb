@@ -1,0 +1,82 @@
+{
+  "devices": [
+    {
+      "name": "Garage",
+      "latitude": 33.5899374,
+      "preference": "GENERAL",
+      "timezone": "America/Los_Angeles",
+      "roomType": "BEDROOM",
+      "deviceType": "awair-glow-c",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-glow-c_4531",
+      "deviceId": 4531,
+      "locationName": "Dornoch Way"
+    },
+    {
+      "name": "Sink",
+      "latitude": 33.5899374,
+      "preference": "ALLERGY",
+      "timezone": "America/Los_Angeles",
+      "roomType": "BEDROOM",
+      "deviceType": "awair-glow-c",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-glow-c_4827",
+      "deviceId": 4827,
+      "locationName": "Dornoch Way"
+    },
+    {
+      "name": "Room",
+      "latitude": 33.5899374,
+      "preference": "ALLERGY",
+      "timezone": "America/Los_Angeles",
+      "roomType": "BEDROOM",
+      "deviceType": "awair-r2",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-r2_1219",
+      "deviceId": 1219,
+      "locationName": "Dornoch Way"
+    },
+    {
+      "name": "Extra",
+      "latitude": 33.5899374,
+      "preference": "GENERAL",
+      "timezone": "America/Los_Angeles",
+      "roomType": "OTHERS",
+      "deviceType": "awair-glow-c",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-glow-c_2592",
+      "deviceId": 2592,
+      "locationName": "Dornoch Way"
+    },
+    {
+      "name": "Kitchen",
+      "latitude": 33.5899374,
+      "preference": "GENERAL",
+      "timezone": "America/Los_Angeles",
+      "roomType": "OTHERS",
+      "deviceType": "awair-r2",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-r2_4035",
+      "deviceId": 4035,
+      "locationName": "Dornoch Way"
+    },
+    {
+      "name": "Downstairs Bathroom",
+      "latitude": 33.5899374,
+      "preference": "GENERAL",
+      "timezone": "America/Los_Angeles",
+      "roomType": "OTHERS",
+      "deviceType": "awair-glow-c",
+      "longitude": -117.5866752,
+      "spaceType": "HOME",
+      "deviceUUID": "awair-glow-c_4995",
+      "deviceId": 4995,
+      "locationName": "Dornoch Way"
+    }
+  ]
+}

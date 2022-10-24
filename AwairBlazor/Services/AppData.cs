@@ -36,6 +36,7 @@ namespace AwairBlazor.Services
             PastHour = new LocalStorageValue<bool>("PastHour", localStore);
             Bearer = new LocalStorageValue<string>("AwairBearerToken", localStore);
             UseFahrenheit = new LocalStorageValue<bool>("UseFahrenheit", localStore);
+            DemoMode = new LocalStorageValue<bool>("DemoMode", localStore);
             Proxy = new LocalStorageValue<string>("Proxy", localStore);
         }
 
@@ -47,6 +48,12 @@ namespace AwairBlazor.Services
 
         public LocalStorageValue<bool> PastHour { get; }
         public LocalStorageValue<bool> UseFahrenheit { get; }
+        public LocalStorageValue<bool> DemoMode { get; }
+
+        public MultiDeviceRawData? DemoHour { get; set; }
+        public MultiDeviceRawData? DemoDay { get; set; }
+
+        public QuickType.Devices? DemoDevices { get; set; }
 
         public string ShortTimeLabel { get; set; } = "Past Hour";
         public string LongTimeLabel { get; set; } = "Past 24 Hour";
@@ -88,6 +95,16 @@ namespace AwairBlazor.Services
                 }
             }
 
+            var deadDate = new DateTime(2022, 11, 30);
+            if (DateTime.Now > deadDate)
+            {
+                await DemoMode.SetValueAsync(true);
+            }
+            else
+            {
+                await DemoMode.SetValueAsync(false);
+            }
+
             await PastHour.Initialize();
             await Bearer.Initialize();
             await UseFahrenheit.Initialize();
@@ -98,15 +115,15 @@ namespace AwairBlazor.Services
                 await Proxy.SetValueAsync(DefaultProxy);
             }
 
-            Trace.WriteLine($"{DateTime.Now.Ticks} {ServiceId} Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}");
 
+            Trace.WriteLine($"{DateTime.Now.Ticks} {ServiceId} Load from local storage: PastHour={PastHour}, Bearer={Bearer}, UseFahrenheit={UseFahrenheit}, Proxy={Proxy}, Demo={DemoMode}");
 
         }
 
         public async Task InitAsync([CallerMemberName] string methodName = "", [CallerFilePath] string callerFilePath = "")
         {
             var id = $"{ServiceId} {Path.GetFileNameWithoutExtension(callerFilePath)}.{methodName}";
-            Trace.WriteLine($"{DateTime.Now.Ticks} {id} Entered Init (before lock).");
+            //Trace.WriteLine($"{DateTime.Now.Ticks} {id} Entered Init (before lock).");
 
             lock (localShouldInitialize)
             {
@@ -114,11 +131,11 @@ namespace AwairBlazor.Services
                 {
                     initializing = new TaskCompletionSource<object>();
                     localShouldInitialize.Value = true;
-                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll initalize.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll initalize.");
                 }
                 else
                 {
-                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll won't try to init.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} {id} I'll won't try to init.");
                 }
             }
 
@@ -127,12 +144,12 @@ namespace AwairBlazor.Services
                 try
                 {
                     await InitLogic();
-                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished init.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished init.");
                     initializing.SetResult(new object());
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"{DateTime.Now.Ticks} {id} Exception in init.");
+                    //Trace.WriteLine($"{DateTime.Now.Ticks} {id} Exception in init.");
                     initializing.SetException(ex);
                     throw;
                 }
@@ -140,7 +157,7 @@ namespace AwairBlazor.Services
             else
             {
                 await initializing.Task;
-                Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished waiting for init.");
+                //Trace.WriteLine($"{DateTime.Now.Ticks} {id} Finished waiting for init.");
             }
         }
     }

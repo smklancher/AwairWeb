@@ -1,5 +1,8 @@
 ﻿@page "/"
+@using System.Diagnostics
 @inject AwairBlazor.Services.AppData appData
+@inject IJSRuntime js
+@inject AwairBlazor.Services.ApiService api
 
 <h1>Awair</h1>
 
@@ -11,25 +14,42 @@
 <p><input type="text" style="width: 100%;" id="proxy" @bind="appData.Proxy.Value" /></p>
 <p><DetailToggle></DetailToggle></p>
 <p><TempUnitsToggle></TempUnitsToggle></p>
+<p><DemoToggle></DemoToggle></p>
 <br />
 <button class="btn btn-primary" @onclick="SaveSettings">Save</button>
-
+<button class="btn btn-primary" @onclick="Download">Download API Response JSON</button>
 @code{
-    private async Task  SaveSettings()
+
+
+    private async Task SaveSettings()
     {
         await appData.Bearer.CommitValueAsync();
         await appData.Proxy.CommitValueAsync();
     }
 
+    private async Task Download()
+    {
+
+        await api.Download();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + ": Init");
+        Trace.WriteLine(this.GetType().ToString() + ": Init");
         await appData.InitAsync();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        System.Diagnostics.Trace.WriteLine(this.GetType().ToString() + $": AfterRender" + (firstRender ? " firstRender" : string.Empty));
+        Trace.WriteLine(this.GetType().ToString() + $": AfterRender" + (firstRender ? " firstRender" : string.Empty));
+
+        // cache demo data
+        if (appData.DemoMode.Value)
+        {
+            var devices = api.GetDevices();
+            var raw = api.GetRawData();
+        }
+
         return base.OnAfterRenderAsync(firstRender);
     }
 }

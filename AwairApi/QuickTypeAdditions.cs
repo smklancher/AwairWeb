@@ -16,13 +16,12 @@ namespace QuickType
 
     public partial class Datum
     {
-        [JsonIgnore]
-        public DevicesDevice Device { get; set; }
+        //[JsonIgnore]
+        public DevicesDevice? Device { get; set; }
     }
 
     public partial class DevicesDevice
     {
-        [JsonIgnore]
         public Color Color { get; set; }
 
         public Color RandomizeColor()
@@ -35,8 +34,8 @@ namespace QuickType
 
     public partial class RawAirData
     {
-        [JsonIgnore]
-        public DevicesDevice Device { get; set; }
+        //[JsonIgnore]
+        public DevicesDevice? Device { get; set; }
 
         [JsonIgnore]
         public List<FlatData> FlatData => Data.Select(x => new FlatData(x)).ToList();

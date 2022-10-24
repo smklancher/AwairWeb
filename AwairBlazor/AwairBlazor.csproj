@@ -6,6 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Demo\Day.json" />
+    <Content Remove="Demo\Devices.json" />
+    <Content Remove="Demo\Hour.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Demo\Day.json" />
+    <EmbeddedResource Include="Demo\Devices.json" />
+    <EmbeddedResource Include="Demo\Hour.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
     <PackageReference Include="MatBlazor" Version="2.8.0" />

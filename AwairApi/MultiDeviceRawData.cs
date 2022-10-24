@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
+using Newtonsoft.Json;
+using QuickType;
 
 namespace AwairApi
 {
@@ -15,6 +17,14 @@ namespace AwairApi
             RawAirData = rawAirDatas;
         }
 
-        public List<QuickType.RawAirData> RawAirData { get; }
+        [JsonProperty("rawairdata")]
+        public List<QuickType.RawAirData> RawAirData { get; set; }
+
+
+        public static MultiDeviceRawData FromJson(string json)
+        {
+            var raw = JsonConvert.DeserializeObject<MultiDeviceRawData>(json, Converter.Settings);
+            return raw;
+        }
     }
 }

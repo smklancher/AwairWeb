@@ -1158,7 +1158,7 @@ namespace QuickType
         public static string ToJson(this OrgDeviceTimezone self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
     }
 
-    internal static class Converter
+    public static class Converter
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
@@ -1169,6 +1169,7 @@ namespace QuickType
                 CompConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
+            Formatting = Formatting.Indented,
         };
     }
 
